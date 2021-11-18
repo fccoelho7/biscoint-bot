@@ -11,24 +11,35 @@ const bc = new Biscoint({
   apiSecret: process.env.API_SECRET,
 });
 
-async function notify(template_params) {
+function toCapitalize(str) {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+async function notify(params) {
   const testAccount = await nodemailer.createTestAccount();
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
+  var transporter = nodemailer.createTransport({
+    service: "Mailgun",
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: "postmaster@sandbox5f546285b4744128af16ebb1f6ffd85e.mailgun.org",
+      pass: "5608dd35ead4bfd3012fa49bc0754d20",
     },
   });
+
+  const html = Object.keys(params)
+    .map(
+      (key) => `<p><strong>${toCapitalize(key)}</strong>: ${params[key]}</p>`
+    )
+    .join("");
 
   await transporter.sendMail({
     from: "Biscoint <contato@biscoint.com>", // sender address
     to: "fccoelho7@gmail.com", // list of receivers
     subject: "Biscoint - Compra Programada", // Subject line
-    text: JSON.stringify(template_params), // plain text body
+    text: JSON.stringify(params), // plain text body
+    html,
   });
 }
 
@@ -54,7 +65,7 @@ express()
 
       res.json(payload);
     } catch (error) {
-      const payload = { message: "error", amount, ...error };
+      const payload = { message: "error", amount: `R$${amount}`, ...error };
 
       await notify(payload);
 
