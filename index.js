@@ -17,10 +17,8 @@ function toCapitalize(str) {
   });
 }
 
-async function notify(params) {
-  const testAccount = await nodemailer.createTestAccount();
-
-  var transporter = nodemailer.createTransport({
+async function notify_error(params) {
+  const transporter = nodemailer.createTransport({
     service: "Mailgun",
     auth: {
       user: "postmaster@sandbox5f546285b4744128af16ebb1f6ffd85e.mailgun.org",
@@ -37,7 +35,7 @@ async function notify(params) {
   await transporter.sendMail({
     from: "Biscoint <contato@biscoint.com>", // sender address
     to: "fccoelho7@gmail.com", // list of receivers
-    subject: "Biscoint - Compra Programada", // Subject line
+    subject: "Biscoint - Compra Programada [Error]", // Subject line
     text: JSON.stringify(params), // plain text body
     html,
   });
@@ -59,17 +57,11 @@ express()
       });
       const order = await bc.confirmOffer({ offerId: offer.offerId });
 
-      const payload = { message: "success", ...order };
-
-      await notify(payload);
-
-      res.json(payload);
+      res.json(order);
     } catch (error) {
-      const payload = { message: "error", amount: `R$${amount}`, ...error };
+      await notify_error(error);
 
-      await notify(payload);
-
-      res.json(payload);
+      res.json(error);
     }
   })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
