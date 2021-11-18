@@ -1,10 +1,17 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 5000
+const express = require("express");
+const PORT = process.env.PORT || 3000;
+const Biscoint = require("biscoint-api-node").default;
+
+require("dotenv").config();
+
+const bc = new Biscoint({
+  apiKey: process.env.API_KEY,
+  apiSecret: process.env.API_SECRET,
+});
 
 express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+  .get("/balance", async (_, res) => {
+    const data = await bc.balance();
+    res.json(data);
+  })
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
