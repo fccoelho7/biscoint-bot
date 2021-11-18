@@ -14,4 +14,13 @@ express()
     const data = await bc.balance();
     res.json(data);
   })
+  .get("/buy", async (_, res) => {
+    const offer = await bc.offer({
+      amount: +process.env.AMOUNT,
+      isQuote: true,
+      op: "buy",
+    });
+    const confirmOrder = await bc.confirmOffer({ offerId: offer.offerId });
+    res.json(confirmOrder);
+  })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
