@@ -1,6 +1,6 @@
 const express = require("express");
 const Biscoint = require("biscoint-api-node").default;
-const axios = require("axios").default;
+const nodemailer = require("nodemailer");
 
 const PORT = process.env.PORT || 3000;
 
@@ -11,13 +11,24 @@ const bc = new Biscoint({
   apiSecret: process.env.API_SECRET,
 });
 
-function notify(template_id, template_params) {
-  return axios.post("https://api.emailjs.com/api/v1.0/email/send", {
-    service_id: "service_iplt3nr",
-    template_id,
-    template_params,
-    user_id: "user_PFZ8CRvPzDNFG1tQOTkNa",
-    accessToken: "3c20cef8d467b1d0185e36a53485d8f4",
+async function notify(template_params) {
+  const testAccount = await nodemailer.createTestAccount();
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: testAccount.user, // generated ethereal user
+      pass: testAccount.pass, // generated ethereal password
+    },
+  });
+
+  await transporter.sendMail({
+    from: "Biscoint <contato@biscoint.com>", // sender address
+    to: "fccoelho7@gmail.com", // list of receivers
+    subject: "Biscoint - Compra Programada", // Subject line
+    text: JSON.stringify(template_params), // plain text body
   });
 }
 
@@ -37,13 +48,17 @@ express()
       });
       const order = await bc.confirmOffer({ offerId: offer.offerId });
 
-      await notify("template_re6xyu7", { order });
+      const payload = { message: "success", ...order };
 
-      res.json(order);
+      await notify(payload);
+
+      res.json(payload);
     } catch (error) {
-      await notify("template_kt7p8dg", { amount, error });
+      const payload = { message: "error", amount, ...error };
 
-      res.json({ amount, error });
+      await notify(payload);
+
+      res.json(payload);
     }
   })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
