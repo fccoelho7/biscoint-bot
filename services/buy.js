@@ -23,6 +23,4 @@ async function buy({ notifyOnError = true } = {}) {
   }
 }
 
-buy();
-
 exports.buy = buy;
