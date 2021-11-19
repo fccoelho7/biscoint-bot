@@ -33,7 +33,7 @@ or
 
 1. Install [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler)
 1. Create a new job
-1. Run the file `node ./services/buy.js`
+1. Run the file `yarn buy`
 
 ## Documentation
 
