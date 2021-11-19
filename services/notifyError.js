@@ -25,7 +25,7 @@ async function notifyError(params) {
   await transporter.sendMail({
     from: "Biscoint <contato@biscoint.com>", // sender address
     to: mailgunEmail, // list of receivers
-    subject: "[Error] Biscoint - Compra Programada", // Subject line
+    subject: "[ERROR] Biscoint - Compra Programada", // Subject line
     text: JSON.stringify(params), // plain text body
     html,
   });
