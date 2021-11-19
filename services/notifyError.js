@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const { mailgunUser, mailgunPass, mailgunEmail } = require("../environment");
+const { mailgun } = require("../environment");
 
 function toCapitalize(str) {
   return str.replace(/\w\S*/g, function (txt) {
@@ -11,8 +11,8 @@ async function notifyError(params) {
   const transporter = nodemailer.createTransport({
     service: "Mailgun",
     auth: {
-      user: mailgunUser,
-      pass: mailgunPass,
+      user: mailgun.user,
+      pass: mailgun.pass,
     },
   });
 
@@ -24,7 +24,7 @@ async function notifyError(params) {
 
   await transporter.sendMail({
     from: "Biscoint <contato@biscoint.com>", // sender address
-    to: mailgunEmail, // list of receivers
+    to: mailgun.email, // list of receivers
     subject: "[ERROR] Biscoint - Compra Programada", // Subject line
     text: JSON.stringify(params), // plain text body
     html,
