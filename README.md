@@ -1,6 +1,6 @@
 # Biscoint Bot
 
-Buy BTC automatically for you using Biscoint
+Buys BTC automatically for you using [Biscoint](https://biscoint.io/)
 
 ## Running Locally
 
@@ -15,7 +15,7 @@ $ yarn dev
 
 Your app should now be running on [localhost:3000](http://localhost:3000/).
 
-Don't forget to create a new `.env` file with yours.
+> Don't forget to create a new `.env` file with your credentials.
 
 ## Deploying to Heroku
 
@@ -31,7 +31,7 @@ or
 
 ## Setting up a CRON job
 
-1. Install Heroku Scheduler
+1. Install [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler)
 1. Create a new job
 1. Run the file `node ./services/buy.js`
 
