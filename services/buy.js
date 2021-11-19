@@ -2,7 +2,7 @@ const { bc } = require("./bc");
 const { notifyError } = require("./notifyError");
 const { amount } = require("../environment");
 
-async function buy() {
+async function buy({ notifyOnError = true } = {}) {
   try {
     const offer = await bc.offer({
       amount,
@@ -15,7 +15,8 @@ async function buy() {
 
     return order;
   } catch (error) {
-    await notifyError(error);
+    if (notifyOnError) await notifyError(error);
+
     console.error(error);
 
     return error;
