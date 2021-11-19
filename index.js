@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 require("dotenv").config();
 
 express()
-  .get("/balance", async (_, res) => {
+  .get("/", async (_, res) => {
     const data = await bc.balance();
     res.json(data);
   })
