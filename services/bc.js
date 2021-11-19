@@ -1,7 +1,9 @@
 const Biscoint = require("biscoint-api-node").default;
-const { apiKey, apiSecret } = require("../environment");
+const { biscoint } = require("../environment");
 
 require("dotenv").config();
+
+const { apiKey, apiSecret } = biscoint;
 
 const bc = new Biscoint({ apiKey, apiSecret });
 
