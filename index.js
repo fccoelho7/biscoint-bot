@@ -7,7 +7,16 @@ const PORT = process.env.PORT || 3000;
 express()
   .get("/", async (_, res) => {
     const data = await bc.balance();
-    res.json(data);
+    const currentBalance = Object.keys(data)
+      .map((key) => `<div><strong>${key}</strong>: ${data[key]}</div>`)
+      .join("\n");
+
+    const html = `
+      <h1>Balanço Atual</h1>
+      ${currentBalance}
+    `;
+
+    res.send(html);
   })
   .get("/buy", async (_, res) => {
     const data = await buy();
